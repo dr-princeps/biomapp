@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Santé</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Calculateur de Santé</h1>
+
+    <label for="choixIndice">Choix de l'Indice à Calculer:</label>
+    <select id="choixIndice" onchange="afficherChamps()">
+        <option value="none">Sélectionnez un indice</option>
+        <option value="homa">HOMA-IR</option>
+        <option value="ratio">Ratio Albuminurie/Créatinurie</option>
+        <option value="proteina">Proteinurie Créatinurie Ratio</option>
+        <option value="calcemie">Calcémie corrigée</option>
+        <option value="ldl">Calcul LDL</option>
+    </select>
+
+    <div id="champsHOMA" style="display: none;">
+        <label for="glucose">Taux de Glucose à jeun (g/L):</label>
+        <input type="number" step="0.01" id="glucose">
+        <label for="insuline">Taux d'Insuline à jeun (mU/L):</label>
+        <input type="number" step="0.01" id="insuline">
+    </div>
+
+    <div id="champsRatio" style="display: none;">
+        <label for="albumine">Taux d'Albumine (mg/L):</label>
+        <input type="number" step="0.01" id="albumine">
+        <label for="creatinine">Taux de Créatinine (mg/dL):</label>
+        <input type="number" step="0.01" id="creatinine">
+    </div>
+
+    <div id="champsProteina" style="display: none;">
+        <label for="proteine">Taux de Protéine (mg/L):</label>
+        <input type="number" step="0.01" id="proteine">
+        <label for="creatinineProteina">Taux de Créatinine (mg/dL):</label>
+        <input type="number" step="0.01" id="creatinineProteina">
+    </div>
+
+    <div id="champsCalcemie" style="display: none;">
+        <label for="calcium">Taux de Calcium (mg/dL):</label>
+        <input type="number" step="0.01" id="calcium">
+        <label for="albumineCalcemie">Taux d'Albumine (g/dL):</label>
+        <input type="number" step="0.01" id="albumineCalcemie">
+    </div>
+
+    <div id="champsLDL" style="display: none;">
+        <label for="cholesterolTotal">Cholestérol Total (g/L):</label>
+        <input type="number" step="0.01" id="cholesterolTotal">
+        <label for="hdlCholesterol">Cholestérol HDL (g/L):</label>
+        <input type="number" step="0.01" id="hdlCholesterol">
+        <label for="triglycerides">Triglycérides (g/L):</label>
+        <input type="number" step="0.01" id="triglycerides">
+    </div>
+
+    <button onclick="calculer()">Calculer</button>
+    <p id="resultat"></p>
+    <p id="valeursReference"></p>
+
+    <script>
+        function afficherChamps() {
+            var choix = document.getElementById("choixIndice").value;
+
+            var champsHOMA = document.getElementById("champsHOMA");
+            var champsRatio = document.getElementById("champsRatio");
+            var champsProteina = document.getElementById("champsProteina");
+            var champsCalcemie = document.getElementById("champsCalcemie");
+            var champsLDL = document.getElementById("champsLDL");
+
+            champsHOMA.style.display = (choix === "homa") ? "block" : "none";
+            champsRatio.style.display = (choix === "ratio") ? "block" : "none";
+            champsProteina.style.display = (choix === "proteina") ? "block" : "none";
+            champsCalcemie.style.display = (choix === "calcemie") ? "block" : "none";
+            champsLDL.style.display = (choix === "ldl") ? "block" : "none";
+        }
+
+        function afficherValeursReference(choix) {
+            var valeursReference = document.getElementById("valeursReference");
+            valeursReference.innerHTML = "";
+
+            switch (choix) {
+                case "homa":
+                    valeursReference.innerHTML = "Valeurs de référence pour HOMA-IR : <br> - Normal: <2.5 <br> - Insulinorésistance: >2.5";
+                    break;
+                case "ratio":
+                    valeursReference.innerHTML = "Valeurs de référence pour Ratio Albuminurie/Créatinurie : <br> - Normal: <30 <br> - Anormal: >30";
+                    break;
+                case "proteina":
+                    valeursReference.innerHTML = "Valeurs de référence pour Proteinurie Créatinurie Ratio : <br> - Normal: <0.2 <br> - Anormal: >0.2";
+                    break;
+                case "calcemie":
+                    valeursReference.innerHTML = "Valeurs de référence pour Calcémie corrigée : <br> - Normale: 8.5 - 10.5 mg/dL";
+                    break;
+                case "ldl":
+                    valeursReference.innerHTML = "Valeurs de référence pour Calcul LDL : <br> - Optimal: <100 mg/dL <br> - Limite élevée: 100-129 mg/dL <br> - Élevé: 130-159 mg/dL";
+                    break;
+                default:
+                    valeursReference.innerHTML = "";
+            }
+        }
+
+        function calculer() {
+            var choix = document.getElementById("choixIndice").value;
+            var resultat = "";
+
+            if (choix === "homa") {
+                var glucose = document.getElementById("glucose").value;
+                var insuline = document.getElementById("insuline").value;
+                var homa_ir = (glucose * insuline) / 22.5;
+                resultat = "Le score de HOMA-IR est : " + homa_ir.toFixed(2) + " (unité)";
+            } else if (choix === "ratio") {
+                var albumine = document.getElementById("albumine").value;
+                var creatinine = document.getElementById("creatinine").value;
+                var ratio = albumine / creatinine;
+                resultat = "Le Ratio Albuminurie/Créatinurie est : " + ratio.toFixed(2) + " (unité)";
+            } else if (choix === "proteina") {
+                var proteine = document.getElementById("proteine").value;
+                var creatinineProteina = document.getElementById("creatinineProteina").value;
+                var ratioProteina = proteine / creatinineProteina;
+                resultat = "Le Ratio Proteinurie/Créatinurie est : " + ratioProteina.toFixed(2) + " (unité)";
+            } else if (choix === "calcemie") {
+                var calcium = document.getElementById("calcium").value;
+                var albumineCalcemie = document.getElementById("albumineCalcemie").value;
+                var calcemieCorrigee = calcium + 0.8 * (4 - parseFloat(albumineCalcemie));
+                resultat = "La Calcémie corrigée est : " + calcemieCorrigee.toFixed(2) + " (mg/dL)";
+            } else if (choix === "ldl") {
+                var cholesterolTotal = document.getElementById("cholesterolTotal").value;
+                var hdlCholesterol = document.getElementById("hdlCholesterol").value;
+                var triglycerides = document.getElementById("triglycerides").value;
+                var ldlCholesterol = cholesterolTotal - hdlCholesterol - (triglycerides / 5);
+                // Conversion de mg/dL à g/L
+                ldlCholesterol = ldlCholesterol / 100;
+                resultat = "Le Calcul LDL est : " + ldlCholesterol.toFixed(4) + " (g/L)";
+            }
+
+            document.getElementById("resultat").innerText = resultat;
+            afficherValeursReference(choix);
+        }
+    </script>
+
+</body>
+</html>
