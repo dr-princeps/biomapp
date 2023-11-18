@@ -38,6 +38,12 @@
             max-width: 200px;
             height: auto;
         }
+        #presentation {
+            background-color: #f1f1f1;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
         #footer {
             position: fixed;
             bottom: 0;
@@ -48,11 +54,16 @@
     </style>
 </head>
 <body>
-
+    <div id="presentation">
+        <h2>Bienvenue dans le Calculateur de Santé</h2>
+        <p>Cette application vous permet de calculer différents indices liés à la santé. Choisissez l'indice que vous souhaitez calculer, saisissez les valeurs nécessaires, puis cliquez sur le bouton "Calculer". Obtenez des résultats précis pour évaluer votre santé.</p>
+    </div>
     <img id="logotop" src="/logotop.png" alt="LogoTop">
 
     <h1>Calculateur de Santé</h1>
 
+    <label for="choixIndice"></label></p>
+    
     <label for="choixIndice">Choix de l'Indice à Calculer:</label>
     <select id="choixIndice" onchange="afficherChamps()">
         <option value="none">Sélectionnez un indice</option>
