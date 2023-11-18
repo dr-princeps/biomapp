@@ -30,14 +30,21 @@
         #logotop {
             display: block;
             margin: 0 auto;
-            max-width: 200px; /* Ajustez la largeur maximale du logo selon vos besoins */
+            max-width: 200px;
             height: auto;
+        }
+        #footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f1f1f1;
+            padding: 10px 0;
         }
     </style>
 </head>
 <body>
 
-    <img id="logotop" src="/logotop.png" alt="LogoTop">
+    <img id="logotop" src="chemin/vers/votre/logo.png" alt="LogoTop">
 
     <h1>Calculateur de Santé</h1>
 
@@ -95,21 +102,23 @@
     <button onclick="calculer()">Calculer</button>
     <p id="resultat"></p>
     <p id="valeursReference"></p>
- 
-	<div id="footer">
-        <center><p>by Doc Y.M </p></center>
+
+    <div id="footer">
+        <p>by Doc Princeps</p>
     </div>
 
     <script>
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
         function afficherChamps() {
             var choix = document.getElementById("choixIndice").value;
-
             var champsHOMA = document.getElementById("champsHOMA");
             var champsRatio = document.getElementById("champsRatio");
             var champsProteina = document.getElementById("champsProteina");
             var champsCalcemie = document.getElementById("champsCalcemie");
             var champsLDL = document.getElementById("champsLDL");
-
             champsHOMA.style.display = (choix === "homa") ? "block" : "none";
             champsRatio.style.display = (choix === "ratio") ? "block" : "none";
             champsProteina.style.display = (choix === "proteina") ? "block" : "none";
@@ -120,7 +129,6 @@
         function afficherValeursReference(choix) {
             var valeursReference = document.getElementById("valeursReference");
             valeursReference.innerHTML = "";
-
             switch (choix) {
                 case "homa":
                     valeursReference.innerHTML = "Valeurs de référence pour HOMA-IR : <br> - Normal: <2.5 <br> - Insulinorésistance: >2.5";
@@ -171,7 +179,6 @@
                 var hdlCholesterol = document.getElementById("hdlCholesterol").value;
                 var triglycerides = document.getElementById("triglycerides").value;
                 var ldlCholesterol = cholesterolTotal - hdlCholesterol - (triglycerides / 5);
-                // Conversion de mg/dL à g/L
                 ldlCholesterol = ldlCholesterol / 100;
                 resultat = "Le Calcul LDL est : " + ldlCholesterol.toFixed(4) + " (g/L)";
             }
